@@ -110,7 +110,7 @@ isConditionTrue_0 = false;
 }
 }
 if (isConditionTrue_0) {
-{gdjs.evtTools.window.openURL("http://127.0.0.1/ranking", runtimeScene);
+{gdjs.evtTools.window.openURL("https://s1411322038gameserver.onrender.com/ranking", runtimeScene);
 }
 }
 

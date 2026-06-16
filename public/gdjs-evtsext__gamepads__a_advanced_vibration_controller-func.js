@@ -9,7 +9,7 @@ gdjs.evtsExt__Gamepads__A_Advanced_Vibration_Controller = {};
 gdjs.evtsExt__Gamepads__A_Advanced_Vibration_Controller.idToCallbackMap = new Map();
 
 
-gdjs.evtsExt__Gamepads__A_Advanced_Vibration_Controller.userFunc0x10dc118 = function GDJSInlineCode(runtimeScene, eventsFunctionContext) {
+gdjs.evtsExt__Gamepads__A_Advanced_Vibration_Controller.userFunc0x17d2060 = function GDJSInlineCode(runtimeScene, eventsFunctionContext) {
 "use strict";
 const { clamp } = gdjs.evtTools.common;
 const playerId = eventsFunctionContext.getArgument("PlayerId") - 1;
@@ -42,7 +42,7 @@ gdjs.evtsExt__Gamepads__A_Advanced_Vibration_Controller.eventsList0 = function(r
 {
 
 
-gdjs.evtsExt__Gamepads__A_Advanced_Vibration_Controller.userFunc0x10dc118(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__Gamepads__A_Advanced_Vibration_Controller.userFunc0x17d2060(runtimeScene, eventsFunctionContext);
 
 }
 
@@ -78,7 +78,9 @@ var eventsFunctionContext = {
         runtimeScene.createObject(objectsList.firstKey());
       if (object) {
         objectsList.get(objectsList.firstKey()).push(object);
-        eventsFunctionContext._objectArraysMap[objectName].push(object);
+        if (!(scopeInstanceContainer && scopeInstanceContainer.isObjectRegistered(objectName))) {
+          eventsFunctionContext._objectArraysMap[objectName].push(object);
+        }
       }
       return object;
     }

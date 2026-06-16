@@ -10,7 +10,7 @@ gdjs.evtsExt__TiledUnitsBar__RightEdgeAnchor.idToCallbackMap = new Map();
 gdjs.evtsExt__TiledUnitsBar__RightEdgeAnchor.GDObjectObjects1= [];
 
 
-gdjs.evtsExt__TiledUnitsBar__RightEdgeAnchor.userFunc0xdfb168 = function GDJSInlineCode(runtimeScene, objects, eventsFunctionContext) {
+gdjs.evtsExt__TiledUnitsBar__RightEdgeAnchor.userFunc0x1257b50 = function GDJSInlineCode(runtimeScene, objects, eventsFunctionContext) {
 "use strict";
 gdjs._TiledUnitsBarExtension = gdjs._TiledUnitsBarExtension || {
     anchors: ["None", "Min", "Max", "Proportional", "Center"]
@@ -30,7 +30,7 @@ gdjs.evtsExt__TiledUnitsBar__RightEdgeAnchor.eventsList0 = function(runtimeScene
 gdjs.copyArray(eventsFunctionContext.getObjects("Object"), gdjs.evtsExt__TiledUnitsBar__RightEdgeAnchor.GDObjectObjects1);
 
 const objects = gdjs.evtsExt__TiledUnitsBar__RightEdgeAnchor.GDObjectObjects1;
-gdjs.evtsExt__TiledUnitsBar__RightEdgeAnchor.userFunc0xdfb168(runtimeScene, objects, eventsFunctionContext);
+gdjs.evtsExt__TiledUnitsBar__RightEdgeAnchor.userFunc0x1257b50(runtimeScene, objects, eventsFunctionContext);
 
 }
 
@@ -69,7 +69,9 @@ var eventsFunctionContext = {
         runtimeScene.createObject(objectsList.firstKey());
       if (object) {
         objectsList.get(objectsList.firstKey()).push(object);
-        eventsFunctionContext._objectArraysMap[objectName].push(object);
+        if (!(scopeInstanceContainer && scopeInstanceContainer.isObjectRegistered(objectName))) {
+          eventsFunctionContext._objectArraysMap[objectName].push(object);
+        }
       }
       return object;
     }

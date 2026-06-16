@@ -181,7 +181,7 @@ gdjs.MENUCode.eventsList0 = function(runtimeScene) {
 
 let isConditionTrue_0 = false;
 isConditionTrue_0 = false;
-{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(19643804);
+{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(26904556);
 }
 if (isConditionTrue_0) {
 {gdjs.evtTools.sound.playMusic(runtimeScene, "litupsubway-key-collect-sfx-522219.mp3", false, gdjs.evtTools.variable.getVariableNumber(runtimeScene.getGame().getVariables().getFromIndex(5)), 1);
@@ -214,7 +214,7 @@ gdjs.MENUCode.eventsList1 = function(runtimeScene) {
 
 let isConditionTrue_0 = false;
 isConditionTrue_0 = false;
-{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(19647820);
+{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(26907356);
 }
 if (isConditionTrue_0) {
 {gdjs.evtTools.sound.playMusic(runtimeScene, "litupsubway-key-collect-sfx-522219.mp3", false, gdjs.evtTools.variable.getVariableNumber(runtimeScene.getGame().getVariables().getFromIndex(5)), 1);
@@ -277,7 +277,7 @@ gdjs.MENUCode.eventsList2 = function(runtimeScene) {
 
 let isConditionTrue_0 = false;
 isConditionTrue_0 = false;
-{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(19652772);
+{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(26911204);
 }
 if (isConditionTrue_0) {
 {gdjs.evtTools.sound.playMusic(runtimeScene, "litupsubway-key-collect-sfx-522219.mp3", false, gdjs.evtTools.variable.getVariableNumber(runtimeScene.getGame().getVariables().getFromIndex(5)), 1);

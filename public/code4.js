@@ -85,7 +85,7 @@ gdjs.copyArray(runtimeScene.getObjects("繼續2"), gdjs.EndCode.GD_9532380_95323
     gdjs.EndCode.GD_9532380_95323962Objects1[i].hide();
 }
 }
-{gdjs.evtTools.network.sendAsyncRequest("http://127.0.0.1/hiscore?clearTime=" + gdjs.evtTools.common.toString(gdjs.evtTools.variable.getVariableNumber(runtimeScene.getGame().getVariables().getFromIndex(8))), "", "GET", "application/json", runtimeScene.getScene().getVariables().get("ServerResponse"), runtimeScene.getScene().getVariables().get("ServerError"));
+{gdjs.evtTools.network.sendAsyncRequest("http://s1411322038gameserver.onrender.com/hiscore?clearTime=" + gdjs.evtTools.common.toString(gdjs.evtTools.variable.getVariableNumber(runtimeScene.getGame().getVariables().getFromIndex(8))), "", "GET", "application/json", runtimeScene.getScene().getVariables().get("ServerResponse"), runtimeScene.getScene().getVariables().get("ServerError"));
 }
 }
 

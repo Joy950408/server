@@ -37,129 +37,85 @@ server.get("/hiscore", async (req, res) => {
     }
 });
 
+// 排行榜
 server.get("/ranking", async (req, res) => {
     try {
-        let currentPlayer = req.query.player || "";
+        var data = await Games.find({}).sort({ clearTime: 1 });
+        var latest = await Games.findOne({}).sort({ createdAt: -1 });
 
-        let data = await Games.find({}).sort({ clearTime: 1 });
+        var rows = data.map((item, index) => {
+            var isLatest = latest && item._id === latest._id;
 
-        let rows = "";
-
-        data.forEach((item, index) => {
-            let isCurrentPlayer = item.name === currentPlayer;
-
-            rows += `
-<tr class="${isCurrentPlayer ? "current-row" : ""}">
+            return `
+<tr class="${isLatest ? "latest" : ""}">
     <td>${index + 1}</td>
-    <td>
-        ${item.name || "玩家"}
-        ${isCurrentPlayer ? `<span class="you-tag">(你)</span>` : ""}
-    </td>
+    <td>${item.name}${isLatest ? "（你）" : ""}</td>
     <td>${item.clearTime} 秒</td>
-</tr>
-`;
-        });
+</tr>`;
+        }).join("");
 
         res.send(`
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>通關排行榜</title>
-
+<title>排行榜</title>
 <style>
-body{
-    margin:0;
-    min-height:100vh;
-    background:linear-gradient(135deg,#07101f,#152238,#0b1020);
-    color:white;
-    font-family:Arial,"Microsoft JhengHei",sans-serif;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f172a, #1e293b, #020617);
+    color: white;
+    font-family: "Microsoft JhengHei", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-
-.card{
-    width:650px;
-    padding:45px 40px;
-    background:rgba(255,255,255,0.08);
-    border:1px solid rgba(255,255,255,0.25);
-    border-radius:18px;
-    box-shadow:0 20px 60px rgba(0,0,0,0.45);
-    text-align:center;
+.card {
+    width: 620px;
+    padding: 40px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.08);
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.2);
 }
-
-h1{
-    margin:0 0 18px;
-    color:#ffd400;
-    font-size:34px;
-    letter-spacing:2px;
+h1 {
+    text-align: center;
+    color: #facc15;
 }
-
-.current-player{
-    margin-bottom:26px;
-    color:#ffd400;
-    font-size:24px;
-    font-weight:bold;
+.current {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #facc15;
+    font-size: 20px;
+    font-weight: bold;
 }
-
-table{
-    width:100%;
-    border-collapse:collapse;
+table {
+    width: 100%;
+    border-collapse: collapse;
 }
-
-th{
-    color:#1fa3ff;
-    font-size:17px;
-    padding:14px;
-    border-bottom:1px solid rgba(255,255,255,0.2);
+th, td {
+    padding: 14px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
 }
-
-td{
-    padding:14px;
-    font-size:18px;
-    border-bottom:1px solid rgba(255,255,255,0.18);
+th {
+    color: #38bdf8;
 }
-
-.current-row{
-    background:rgba(255,212,0,0.15);
-    color:#ffd400;
-    font-weight:bold;
-}
-
-.you-tag{
-    margin-left:8px;
-    color:#ffd400;
-    font-weight:bold;
-}
-
-.back{
-    display:inline-block;
-    margin-top:30px;
-    padding:13px 34px;
-    background:#ffd400;
-    color:#111;
-    text-decoration:none;
-    border-radius:999px;
-    font-size:17px;
-    font-weight:bold;
-}
-
-.back:hover{
-    background:#ffe45c;
+.latest {
+    background: rgba(250, 204, 21, 0.18);
+    color: #facc15;
+    font-weight: bold;
 }
 </style>
 </head>
-
 <body>
 <div class="card">
     <h1>通關排行榜</h1>
 
-    ${currentPlayer ? `
-    <div class="current-player">
-        你是 ${currentPlayer}
+    <div class="current">
+        你這次是：${latest ? latest.name : "尚未上傳"}
     </div>
-    ` : ""}
 
     <table>
         <tr>
@@ -169,14 +125,14 @@ td{
         </tr>
         ${rows}
     </table>
-
-    <a class="back" href="/">回首頁</a>
 </div>
 </body>
 </html>
-`);
+        `);
+
     } catch (err) {
-        res.send("排行榜讀取失敗：" + err.message);
+        console.log(err);
+        res.status(500).send("ERROR");
     }
 });
 

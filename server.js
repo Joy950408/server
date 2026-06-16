@@ -8,18 +8,29 @@ server.use(bodyparser.json({ limit: "100mb" }));
 server.use(express.static(__dirname + "/public"));
 
 var DB = require("nedb-promises");
-var Games = new DB({ filename: "game.db", autoload: true });
+var Games = new DB({
+    filename: "game.db",
+    autoload: true
+});
 
+// 首頁
 server.get("/", (req, res) => {
     res.sendFile(__dirname + "/public/index.html");
 });
 
-// 上傳成績，只回傳 JSON，不開結果網頁
+// 上傳成績
 server.get("/hiscore", async (req, res) => {
     try {
-        var count = await Games.count({});
-        var playerName = "Player" + (count + 1);
-        var clearTime = Number(req.query.clearTime || req.query.score || 0);
+
+        let count = await Games.count({});
+
+        let playerName = "Player" + (count + 1);
+
+        let clearTime = Number(
+            req.query.clearTime ||
+            req.query.score ||
+            0
+        );
 
         await Games.insert({
             name: playerName,
@@ -27,120 +38,198 @@ server.get("/hiscore", async (req, res) => {
             createdAt: new Date()
         });
 
-        res.json({
-            success: true,
-            player: playerName,
-            clearTime: clearTime
-        });
-
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({
-            success: false
-        });
-    }
-});
-
-// 排行榜
-// 排行榜
-server.get("/ranking", async (req, res) => {
-    try {
-        var data = await Games.find({}).sort({ clearTime: 1 });
-        var latest = await Games.findOne({}).sort({ createdAt: -1 });
-
-        var rows = data.map((item, index) => {
-            var isLatest = latest && item._id === latest._id;
-
-            return `
-<tr class="${isLatest ? "latest" : ""}">
-    <td>${index + 1}</td>
-    <td>${item.name}${isLatest ? "（你）" : ""}</td>
-    <td>${item.clearTime} 秒</td>
-</tr>`;
-        }).join("");
-
         res.send(`
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>排行榜</title>
+<title>通關結果</title>
+
 <style>
-body {
-    margin: 0;
-    min-height: 100vh;
-    background: linear-gradient(135deg, #0f172a, #1e293b, #020617);
-    color: white;
-    font-family: "Microsoft JhengHei", sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+
+body{
+    margin:0;
+    background:black;
+    color:white;
+    font-family:Arial;
+    text-align:center;
 }
-.card {
-    width: 620px;
-    padding: 40px;
-    border-radius: 20px;
-    background: rgba(255,255,255,0.08);
-    box-shadow: 0 0 30px rgba(0,0,0,0.5);
-    border: 1px solid rgba(255,255,255,0.2);
+
+.container{
+    margin-top:120px;
 }
-h1 {
-    text-align: center;
-    color: #facc15;
+
+.title{
+    font-size:90px;
+    color:#b30000;
+    text-shadow:
+        2px 2px 0 white,
+        -2px -2px 0 white,
+        2px -2px 0 white,
+        -2px 2px 0 white;
 }
-.current {
-    text-align: center;
-    margin-bottom: 25px;
-    color: #facc15;
-    font-size: 20px;
-    font-weight: bold;
+
+.player{
+    font-size:40px;
+    margin-top:40px;
 }
-table {
-    width: 100%;
-    border-collapse: collapse;
+
+.time{
+    font-size:70px;
+    margin-top:20px;
 }
-th, td {
-    padding: 14px;
-    text-align: center;
-    border-bottom: 1px solid rgba(255,255,255,0.15);
+
+.btn{
+    display:inline-block;
+    margin-top:50px;
+    padding:15px 50px;
+    background:white;
+    color:black;
+    text-decoration:none;
+    font-size:28px;
+    border:3px solid black;
 }
-th {
-    color: #38bdf8;
+
+.btn:hover{
+    background:#ddd;
 }
-.latest {
-    background: rgba(250, 204, 21, 0.18);
-    color: #facc15;
-    font-weight: bold;
-}
+
 </style>
+
 </head>
 <body>
-<div class="card">
-    <h1>通關排行榜</h1>
 
-    <div class="current">
-        你是：${latest ? latest.name : "尚未上傳"}
-    </div>
+<div class="container">
 
-    <table>
-        <tr>
-            <th>排名</th>
-            <th>玩家</th>
-            <th>通關時間</th>
-        </tr>
-        ${rows}
-    </table>
+<div class="title">
+通關時間：${clearTime} 秒
 </div>
+
+<div class="player">
+你的編號：${playerName}
+</div>
+
+<br>
+
+<a class="btn" href="/ranking">
+排行榜
+</a>
+
+</div>
+
 </body>
 </html>
-        `);
-
-    } catch (err) {
-        console.log(err);
-        res.status(500).send("ERROR");
+`);
+    }
+    catch(err){
+        res.send(err.message);
     }
 });
 
-server.listen(80, () => {
-    console.log("Server running on port 80");
+// 排行榜
+server.get("/ranking", async (req, res) => {
+    try {
+
+        let data = await Games.find({})
+            .sort({ clearTime: 1 });
+
+        let html = `
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>排行榜</title>
+
+<style>
+
+body{
+    background:black;
+    color:white;
+    text-align:center;
+    font-family:Arial;
+}
+
+h1{
+    color:gold;
+    font-size:60px;
+}
+
+table{
+    margin:auto;
+    border-collapse:collapse;
+    width:70%;
+}
+
+th,td{
+    border:1px solid white;
+    padding:15px;
+    font-size:24px;
+}
+
+th{
+    background:#333;
+}
+
+.back{
+    display:inline-block;
+    margin-top:30px;
+    padding:12px 40px;
+    background:white;
+    color:black;
+    text-decoration:none;
+    font-size:24px;
+}
+
+</style>
+
+</head>
+<body>
+
+<h1>排行榜</h1>
+
+<table>
+
+<tr>
+<th>排名</th>
+<th>玩家</th>
+<th>通關時間(秒)</th>
+</tr>
+`;
+
+        data.forEach((item, index) => {
+
+            html += `
+<tr>
+<td>${index + 1}</td>
+<td>${item.name}</td>
+<td>${item.clearTime}</td>
+</tr>
+`;
+        });
+
+        html += `
+</table>
+
+<a class="back" href="/">
+回首頁
+</a>
+
+</body>
+</html>
+`;
+
+        res.send(html);
+
+    } catch(err) {
+
+        res.send("排行榜讀取失敗：" + err.message);
+
+    }
+});
+
+// 啟動
+const PORT = process.env.PORT || 3000;
+
+server.listen(PORT, () => {
+    console.log("Server running on port " + PORT);
 });
